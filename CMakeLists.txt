@@ -1,0 +1,5 @@
+cmake_minimum_required (VERSION 2.8)
+set(CMAKE_CXX_FLAGS "${CAMKE_CXX_FLAGS} -std=c++11 -pthread")
+project(Skynet_cc)
+include_directories("3rd/lua")
+add_executable(demo main.cc core/MsgQueue.cc core/Core.cc core/Singleton.h) 
