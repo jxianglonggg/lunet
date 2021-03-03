@@ -11,7 +11,7 @@ Msg::~Msg()
     //todo delete
     std::cout<<"Msg release "<<std::endl;
 }
-Msg::Msg(EMSGTYPE type, void* content)
+Msg::Msg(EMSGTYPE type, Any&& content)
 :type_(type), content_(content), id_(0)
 {
 
@@ -36,7 +36,7 @@ int Msg::getid()
     return id_;
 }
 
-void* Msg::getContent()
+Any& Msg::getContent()
 {
     return content_;
 }
@@ -119,6 +119,22 @@ bool MsgQueue::fetch(SubMsgQueue& smq)
         smq = std::move(subMsgs_.front());
         subMsgs_.pop_front();
         return true;
+    }
+    return false;
+}
+
+bool MsgQueue::fetch(int sid, SubMsgQueue& smqout)
+{
+    std::lock_guard<std::mutex> lg(lock_);
+    auto iter = subMsgs_.begin();
+    for(;iter != subMsgs_.end();iter++)
+    {
+        if (iter->getSid() == sid)
+        {
+            smqout = std::move(*iter);
+            subMsgs_.erase(iter);
+            return true;
+        }
     }
     return false;
 }

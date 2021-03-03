@@ -2,6 +2,7 @@
 #include <deque>
 #include <thread>
 #include <mutex>
+#include "any.hpp"
 
 class Msg 
 {
@@ -14,7 +15,8 @@ public:
     };
 public:
     Msg(const Msg& msg) = delete;
-    Msg(EMSGTYPE type, void* content);
+    Msg& operator = (const Msg& msg) = delete;
+    Msg(EMSGTYPE type, Any&& content);
     Msg();
     ~Msg();
     Msg(Msg&& msg);
@@ -23,10 +25,10 @@ public:
     void setid(int id);
     int getid();
 public:
-    void* getContent();
+    Any& getContent();
 private:    
     EMSGTYPE type_;
-    void* content_;
+    Any content_;
     int id_;
 };
 
@@ -34,6 +36,7 @@ class SubMsgQueue
 {
 public:
     SubMsgQueue(const SubMsgQueue& smq) = delete;
+    SubMsgQueue& operator = (const SubMsgQueue& smq) = delete;
     SubMsgQueue();
     SubMsgQueue(int sid, Msg&& msg);
     ~SubMsgQueue();
@@ -59,10 +62,12 @@ class MsgQueue
 public:
     MsgQueue();
     MsgQueue(const MsgQueue& mq)= delete;
+    MsgQueue& operator = (const MsgQueue& mq) = delete;
     ~MsgQueue();
     MsgQueue(MsgQueue&& queue);
 public:
     bool fetch(SubMsgQueue& smq);
+    bool fetch(int sid, SubMsgQueue& smq);
     int push(int sid, Msg&& msg);
 private:
     std::mutex lock_;
