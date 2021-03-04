@@ -5,22 +5,17 @@
 #include "core/Singleton.h"
 #include "core/any.hpp"
 using MsgQueueInstance = Singleton<MsgQueue>;
-struct product 
-{
-    int a;
-    int b;
-};
 
 void test_poduce(int svrid)
 {
     auto mq = MsgQueueInstance::instance();
     //std::cout<<"function="<<__FUNCTION__<<";mq="<<mq<<std::endl;
-    product p;
-    p.a = random() % 10;
-    p.b = random() % 10;
-    Msg msg(Msg::EMSGTYPE::test, p);
+    Msg::ContentTest content;
+    content.a = random() % 10;
+    content.b = random() % 10;
+    Msg msg(Msg::EMSGTYPE::eTest, content);
     int msgid = mq->push(svrid, std::move(msg));
-    std::cout<<"produce to svr="<<svrid<<";a="<<p.a<<";b="<<p.b<<";msg id="<< msgid <<std::endl;
+    std::cout<<"produce to svr="<<svrid<<";a="<<content.a<<";b="<<content.b<<";msg id="<< msgid <<std::endl;
     auto stime = chrono::seconds(random() % 5);
     std::this_thread::sleep_for(stime);
 }
@@ -29,16 +24,15 @@ void test_consume(int svrid)
 {
     auto mq = MsgQueueInstance::instance();
     //std::cout<<"function="<<__FUNCTION__<<";mq="<<mq<<std::endl;
-    product* p = nullptr;
     SubMsgQueue smq;
     if(mq->fetch(svrid, smq))
     {
         for(auto& msg : smq)
         {
-            if(msg.is(Msg::EMSGTYPE::test))
+            if(msg.is(Msg::EMSGTYPE::eTest))
             {
-                product& p = msg.getContent().AnyCast<product>();
-                std::cout<<"consume svrid="<<svrid<<";msg id="<<msg.getid()<<";result="<<int(p.a + p.b)<<std::endl;
+                Msg::ContentTest content = msg.getContent().AnyCast<Msg::ContentTest>();
+                std::cout<<"consume svrid="<<svrid<<";msg id="<<msg.getid()<<";result="<<int(content.a + content.b)<<std::endl;
             }
         }
     }

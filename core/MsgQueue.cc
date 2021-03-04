@@ -14,7 +14,7 @@ Msg::~Msg()
 Msg::Msg(EMSGTYPE type, Any&& content)
 :type_(type), content_(content), id_(0)
 {
-
+    std::cout<<"Msg create "<<std::endl;
 }
 Msg::Msg(Msg&& msg)
 {
@@ -22,7 +22,7 @@ Msg::Msg(Msg&& msg)
     content_ = msg.content_;
     id_ = msg.id_;
     msg.content_ = nullptr;
-    msg.type_ = EMSGTYPE::none;
+    msg.type_ = EMSGTYPE::eNone;
     msg.id_ = 0;
 }
 

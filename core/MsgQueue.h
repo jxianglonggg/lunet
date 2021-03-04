@@ -10,9 +10,15 @@ class Msg :noncopyable
 public:
     enum EMSGTYPE 
     {
-        none = 0,
-        test,
-        socket,
+        eNone = 0,
+        eTest,
+        eSocket,
+    };
+    class ContentTest
+    {
+    public:
+        int a;
+        int b;
     };
 public:
     Msg(EMSGTYPE type, Any&& content);
