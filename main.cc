@@ -21,6 +21,8 @@ void test_poduce(int svrid)
     Msg msg(Msg::EMSGTYPE::test, p);
     int msgid = mq->push(svrid, std::move(msg));
     std::cout<<"produce to svr="<<svrid<<";a="<<p.a<<";b="<<p.b<<";msg id="<< msgid <<std::endl;
+    auto stime = chrono::seconds(random() % 5);
+    std::this_thread::sleep_for(stime);
 }
 
 void test_consume(int svrid) 
@@ -40,6 +42,8 @@ void test_consume(int svrid)
             }
         }
     }
+    auto stime = chrono::seconds(random() % 10);
+    std::this_thread::sleep_for(stime);
 }
 
 void test_message_queue()

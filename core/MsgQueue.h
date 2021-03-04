@@ -3,8 +3,9 @@
 #include <thread>
 #include <mutex>
 #include "any.hpp"
+#include "noncopyable.h"
 
-class Msg 
+class Msg :noncopyable
 {
 public:
     enum EMSGTYPE 
@@ -14,8 +15,6 @@ public:
         socket,
     };
 public:
-    Msg(const Msg& msg) = delete;
-    Msg& operator = (const Msg& msg) = delete;
     Msg(EMSGTYPE type, Any&& content);
     Msg();
     ~Msg();
@@ -32,11 +31,9 @@ private:
     int id_;
 };
 
-class SubMsgQueue 
+class SubMsgQueue :noncopyable
 {
 public:
-    SubMsgQueue(const SubMsgQueue& smq) = delete;
-    SubMsgQueue& operator = (const SubMsgQueue& smq) = delete;
     SubMsgQueue();
     SubMsgQueue(int sid, Msg&& msg);
     ~SubMsgQueue();
@@ -57,12 +54,10 @@ private:
     int sid_;
 };
 
-class MsgQueue
+class MsgQueue :noncopyable
 {
 public:
     MsgQueue();
-    MsgQueue(const MsgQueue& mq)= delete;
-    MsgQueue& operator = (const MsgQueue& mq) = delete;
     ~MsgQueue();
     MsgQueue(MsgQueue&& queue);
 public:
