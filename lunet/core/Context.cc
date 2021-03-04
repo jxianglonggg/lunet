@@ -11,6 +11,11 @@ Context::~Context()
 
 }
 
+int Context::getid()
+{
+    return sid_;
+}
+
 ContextFactory::ContextFactory()
 :id_(0)
 {

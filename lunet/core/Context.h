@@ -29,10 +29,10 @@ public:
     ContextFactory();
     ~ContextFactory();
 public:
-    ContextPtr create();
+    //ContextPtr create();
     ContextPtr get(int sid);
 private:
-    Contexts contexts_;
+    ContextPtrs contexts_;
     int id_;
     std::mutex lock_;
 };
