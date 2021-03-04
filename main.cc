@@ -87,8 +87,8 @@ void test_any()
 
 int main(int argc, char *argv[])
 {
-    test_message_queue();
-    //test_any();
+    //test_message_queue();
+    test_any();
     std::cout<<"hello world"<<std::endl;
 
     return 0;

@@ -1,17 +1,17 @@
 #include "Context.h"
 
-Context::Context(ContextFactoryPtr& factoryPtr)
+IContext::IContext(ContextFactoryPtr& factoryPtr)
 :sid_(0), factoryPtr_(factoryPtr)
 {
 
 }
 
-Context::~Context()
+IContext::~IContext()
 {
 
 }
 
-int Context::getid()
+int IContext::getid()
 {
     return sid_;
 }

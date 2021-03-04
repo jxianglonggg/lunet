@@ -4,15 +4,16 @@
 #include <vector>
 #include <mutex>
 #include "Singleton.h"
+#include "noncopyable.h"
+
 class ContextFactory ;
 using ContextFactorySingleton = Singleton<ContextFactory>;
 using ContextFactoryPtr = std::weak_ptr<ContextFactory>;
-class Context 
+class IContext :noncopyable
 {
 public:
-    Context(const Context& c) = delete;
-    Context(ContextFactoryPtr& factoryPtr);
-    ~Context();
+    IContext(ContextFactoryPtr& factoryPtr);
+    ~IContext();
 public:
     int getid();
 private:
@@ -20,7 +21,7 @@ private:
     ContextFactoryPtr factoryPtr_;
 };
 
-using ContextPtr = std::shared_ptr<Context>;
+using ContextPtr = std::shared_ptr<IContext>;
 using ContextPtrs = std::vector<ContextPtr>;
 class ContextFactory 
 {
