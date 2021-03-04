@@ -17,6 +17,7 @@ lua绑定|||
 ## vscode + wsl + cmake 编码并调试程序
 ### vscode 安装时需要勾选环境变量添加到path
 ### 在插件中心安装Remote-WSL、Remote-SSH、Remote Development基础插件;
+### wsl中切换到代码目录 输入命令 code .
 ### launch.json
 ```
 {
