@@ -1,10 +1,17 @@
 #include <iostream>
+#include <chrono>
 #include <random>
+#include <sstream>
+#include <iomanip>
 #include "core/MsgQueue.h"
 #include "core/Core.h"
 #include "core/Singleton.h"
 #include "core/any.hpp"
+#include "core/Context.h"
+#include "core/libhelper.hpp"
+
 using MsgQueueInstance = Singleton<MsgQueue>;
+using Libhelper = Singleton<LibHelper>;
 
 void test_poduce(int svrid)
 {
@@ -85,10 +92,56 @@ void test_any()
     }
 }
 
+void test_logger()
+{
+    std::shared_ptr<Core> core = std::make_shared<Core>();
+    IContext* logger = core->NewServer("logger");
+
+    auto produce_log = [&]
+    {
+        auto now = std::chrono::system_clock::now();
+        std::time_t tmNow = std::chrono::system_clock::to_time_t(now);
+        std::stringstream stream;
+        stream << std::put_time(std::localtime(&tmNow), "%F %T");
+        Msg::ContentText content;
+        string s = stream.str() + " aaaa";
+        content.setString(s);
+        Msg msg(Msg::EMSGTYPE::eText, content);
+        core->call(0, logger->getid(), std::move(msg));
+    };
+
+    auto work_thread = [&]
+    {
+        auto mq = MsgQueueInstance::instance();
+        //std::cout<<"function="<<__FUNCTION__<<";mq="<<mq<<std::endl;
+        SubMsgQueue smq;
+        if(mq->fetch(smq))
+        {
+            IContext* server = core->GetServer(smq.getSid());
+            if (server == nullptr)
+            {
+
+            }
+            else 
+            {
+                for(auto& msg : smq)
+                {
+                    server->cb(std::move(msg));
+                } 
+            }
+        }
+    };
+    Tasks tasks;
+    tasks.emplace_back(std::bind(produce_log));
+    tasks.emplace_back(std::bind(work_thread));
+    core->run(std::move(tasks));
+}
+
 int main(int argc, char *argv[])
 {
     //test_message_queue();
-    test_any();
+    //test_any();
+    test_logger();
     std::cout<<"hello world"<<std::endl;
 
     return 0;

@@ -1,9 +1,13 @@
+#ifndef __MSG_QUEUE__ 
+#define __MSG_QUEUE__
 #include <vector>
 #include <deque>
 #include <thread>
 #include <mutex>
+#include <string>
 #include "any.hpp"
 #include "noncopyable.h"
+#include "Context.h"
 
 class Msg :noncopyable
 {
@@ -13,12 +17,27 @@ public:
         eNone = 0,
         eTest,
         eSocket,
+        eText,
     };
     class ContentTest
     {
     public:
         int a;
         int b;
+    };
+    class ContentText 
+    {
+    public:
+        std::string& getString()
+        {
+            return s_;
+        }
+        void setString(std::string& s)
+        {
+            s_ = s;
+        }
+    private:
+        std::string s_;
     };
 public:
     Msg(EMSGTYPE type, Any&& content);
@@ -31,6 +50,9 @@ public:
     int getid();
 public:
     Any& getContent();
+public:
+    int source;
+    int dest;
 private:    
     EMSGTYPE type_;
     Any content_;
@@ -75,3 +97,4 @@ private:
     std::deque<SubMsgQueue> subMsgs_;
     int msgid_;
 };
+#endif //__MSG_QUEUE__

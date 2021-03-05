@@ -2,6 +2,7 @@
 #define __ANY__ 
 #include <memory>
 #include <typeindex>
+#include <iostream>
 using namespace std;
 
 struct Any 

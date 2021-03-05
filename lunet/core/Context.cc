@@ -1,7 +1,8 @@
 #include "Context.h"
+#include "MsgQueue.h"
 
-IContext::IContext(ContextFactoryPtr& factoryPtr)
-:sid_(0), factoryPtr_(factoryPtr)
+IContext::IContext()
+:sid_(0)
 {
 
 }
@@ -16,26 +17,7 @@ int IContext::getid()
     return sid_;
 }
 
-ContextFactory::ContextFactory()
-:id_(0)
+void IContext::SetID(int id)
 {
-
-}
-
-ContextFactory::~ContextFactory()
-{
-
-}
-
-ContextPtr ContextFactory::get(int sid)
-{
-    std::lock_guard<std::mutex> lg(lock_);
-    for(auto context : contexts_)
-    {
-        if(context->getid() == sid)
-        {
-            return context;
-        }
-    }
-    return  ContextPtr(nullptr);
+    sid_ = id;
 }

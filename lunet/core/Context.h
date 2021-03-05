@@ -5,36 +5,23 @@
 #include <mutex>
 #include "Singleton.h"
 #include "noncopyable.h"
+#include "Any.hpp"
 
-class ContextFactory ;
-using ContextFactorySingleton = Singleton<ContextFactory>;
-using ContextFactoryPtr = std::weak_ptr<ContextFactory>;
+class Msg;
+class IContext;
 class IContext :noncopyable
 {
 public:
-    IContext(ContextFactoryPtr& factoryPtr);
+    IContext();
     ~IContext();
 public:
+    virtual bool init() = 0;
+    virtual bool destory() = 0;
+    virtual bool cb(Msg&& msg) = 0;
+public:
     int getid();
+    void SetID(int id);
 private:
     int sid_;
-    ContextFactoryPtr factoryPtr_;
-};
-
-using ContextPtr = std::shared_ptr<IContext>;
-using ContextPtrs = std::vector<ContextPtr>;
-class ContextFactory 
-{
-public:
-    ContextFactory(const ContextFactory& cf) = delete;
-    ContextFactory();
-    ~ContextFactory();
-public:
-    //ContextPtr create();
-    ContextPtr get(int sid);
-private:
-    ContextPtrs contexts_;
-    int id_;
-    std::mutex lock_;
 };
 #endif //__CONTEXT__

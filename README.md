@@ -30,7 +30,7 @@ lua绑定|||
             "program": "${workspaceFolder}/linux_build/lunet",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/linux_build",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
