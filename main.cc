@@ -98,10 +98,6 @@ void test_logger()
 
     auto produce_log = [&]
     {
-        auto now = std::chrono::system_clock::now();
-        std::time_t tmNow = std::chrono::system_clock::to_time_t(now);
-        std::stringstream stream;
-        stream << std::put_time(std::localtime(&tmNow), "%F %T");
         LOGD(1, "a", 2, "d ddd", 100);
     };
 
