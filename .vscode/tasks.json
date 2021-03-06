@@ -3,7 +3,7 @@
         {
             "type": "shell",
             "label": "rebuild",
-            "command":"cd linux_build;rm -rf ./*; cmake .. ; make clean; make ; rm *.log",
+            "command":"cd linux_build;rm -rf ./*; cmake .. ; make clean; make; rm -rf *.log",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -13,7 +13,7 @@
             // 增量编译
             "type": "shell",
             "label": "build",
-            "command":"cd linux_build; make clean ; make ; rm *.log",
+            "command":"cd linux_build; make clean ; make; rm -rf *.log",
         }
     ],
     "version": "2.0.0"

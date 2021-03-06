@@ -4,11 +4,12 @@
 #include <sstream>
 #include <iomanip>
 #include "core/MsgQueue.h"
-#include "core/Core.h"
 #include "core/Singleton.h"
 #include "core/any.hpp"
 #include "core/Context.h"
 #include "core/libhelper.hpp"
+#include "core/Core.h"
+#include "core/log.hpp"
 
 using MsgQueueInstance = Singleton<MsgQueue>;
 using Libhelper = Singleton<LibHelper>;
@@ -66,7 +67,6 @@ void test_any()
     auto r = n.IsNull();
     string s = "hello";
     n = s;
-    //n.AnyCast<int>();
     Any n1= 1;
     n1.Is<int>();
     Any a = 1;
@@ -94,8 +94,7 @@ void test_any()
 
 void test_logger()
 {
-    std::shared_ptr<Core> core = std::make_shared<Core>();
-    IContext* logger = core->NewServer("logger");
+    std::shared_ptr<Core> core(CoreIns::instance());
 
     auto produce_log = [&]
     {
@@ -103,17 +102,12 @@ void test_logger()
         std::time_t tmNow = std::chrono::system_clock::to_time_t(now);
         std::stringstream stream;
         stream << std::put_time(std::localtime(&tmNow), "%F %T");
-        Msg::ContentText content;
-        string s = stream.str() + " aaaa";
-        content.setString(s);
-        Msg msg(Msg::EMSGTYPE::eText, content);
-        core->call(0, logger->getid(), std::move(msg));
+        LOGD(1, "a", 2, "d ddd", 100);
     };
 
     auto work_thread = [&]
     {
         auto mq = MsgQueueInstance::instance();
-        //std::cout<<"function="<<__FUNCTION__<<";mq="<<mq<<std::endl;
         SubMsgQueue smq;
         if(mq->fetch(smq))
         {
@@ -132,6 +126,8 @@ void test_logger()
         }
     };
     Tasks tasks;
+    tasks.emplace_back(std::bind(produce_log));
+    tasks.emplace_back(std::bind(produce_log));
     tasks.emplace_back(std::bind(produce_log));
     tasks.emplace_back(std::bind(work_thread));
     core->run(std::move(tasks));

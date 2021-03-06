@@ -1,12 +1,13 @@
+#include <iomanip>
 #include "Core.h"
 #include "libhelper.hpp"
 using Libhelper = Singleton<LibHelper>;
 using MsgQueueInstance = Singleton<MsgQueue>;
 
 Core::Core()
-:incr_(0)
+:incr_(0),running_(false),loglevel_(eLogLevel::eDebug)
 {
-
+    init();
 }
 
 Core::~Core()
@@ -14,8 +15,18 @@ Core::~Core()
 
 }
 
+void Core::init()
+{
+    logger_ = NewServer("logger");
+    logger_->init();
+}
+
 void Core::run(Tasks&& tasks)
 {
+    if(running_)
+        return;
+    running_ = true;
+
     for(auto task : tasks)
     {
         threads_.emplace_back([=]{ while(!stop_) { task(); } });
@@ -61,4 +72,20 @@ bool Core::call(int source, int dest, Msg&& msg)
 void Core::send(int source, int dest, Msg&& msg)
 {
 
+}
+
+void Core::log(std::stringstream && stream, Core::eLogLevel level)
+{
+    if (level >= loglevel_)
+    {
+        auto now = std::chrono::system_clock::now();
+        std::time_t tmNow = std::chrono::system_clock::to_time_t(now);
+        std::stringstream stime;
+        stime << (std::put_time(std::localtime(&tmNow), "[%F %T]"));
+        Msg::ContentText content;
+        string log = stime.str() + stream.str();
+        content.setString(log);
+        Msg msg(Msg::EMSGTYPE::eText, content);
+        call(0, logger_->getid(), std::move(msg));
+    }
 }

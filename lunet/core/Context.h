@@ -24,4 +24,9 @@ public:
 private:
     int sid_;
 };
+
+class Bootstrap :IContext
+{
+    
+};
 #endif //__CONTEXT__
