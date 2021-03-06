@@ -1,8 +1,10 @@
 #ifndef __LOG__
 #define __LOG__
+#include "core/define.h"
 #include "core/Core.h"
 #include "core/Context.h"
-
+namespace Lunet{
+namespace Logger{
 std::ostream & operator << (std::ostream & os, IContext& context)
 {
     char debugstr[128] = { 0 };
@@ -11,13 +13,21 @@ std::ostream & operator << (std::ostream & os, IContext& context)
     return os;
 }
 
-void log(std::stringstream& stream, Core::eLogLevel level)
+std::ostream & operator << (std::ostream & os, IContext* context)
+{
+    char debugstr[128] = { 0 };
+    snprintf(debugstr, sizeof(debugstr), "[%s(%d)]", typeid(*context).name(), context->getid()); 
+    os<<debugstr;
+    return os;
+}
+
+void log(std::stringstream& stream, eLogLevel level)
 {
     CoreIns::instance()->log(std::move(stream), level);
 }
 
 template <typename T, typename ... Args>
-void log(std::stringstream& stream, Core::eLogLevel level, T&& head, Args ... args)
+void log(std::stringstream& stream, eLogLevel level, T&& head, Args ... args)
 {
     stream << head;
     log(stream, level, args...);
@@ -25,7 +35,7 @@ void log(std::stringstream& stream, Core::eLogLevel level, T&& head, Args ... ar
 
 const char* logI2S[] = {"D", "W", "I", "E"};
 template <typename ... Args>
-void log(Core::eLogLevel level, const char* file, const int line, Args&& ... args)
+void log(eLogLevel level, const char* file, const int line, Args&& ... args)
 {
     char debugstr[128] = { 0 };
     snprintf(debugstr, sizeof(debugstr), "[%s.%d][%s]", file, line, logI2S[level]);
@@ -37,25 +47,25 @@ void log(Core::eLogLevel level, const char* file, const int line, Args&& ... arg
 template <typename ... Args>
 void logd(Args&& ... args)
 {
-    log(Core::eDebug, args...);
+    log(eDebug, args...);
 }
 
 template <typename ... Args>
 void logw(Args&& ... args)
 {
-    log(Core::eWarn, args...);
+    log(eWarn, args...);
 }
 
 template <typename ... Args>
 void logi(Args&& ... args)
 {
-    log(Core::eInfo, args...);
+    log(eInfo, args...);
 }
 
 template <typename ... Args>
 void loge(Args&& ... args)
 {
-    log(Core::eErro, args...);
+    log(eErro, args...);
 }
 
 #define LOGD(...) logd(__FILE__, __LINE__, __VA_ARGS__)
@@ -63,4 +73,10 @@ void loge(Args&& ... args)
 #define LOGI(...) logi(__FILE__, __LINE__, __VA_ARGS__)
 #define LOGE(...) logE(__FILE__, __LINE__, __VA_ARGS__)
 
+void SetLogLevel(eLogLevel level)
+{
+    CoreIns::instance()->SetLogLevel(level);
+}
+};
+};
 #endif //__LOG__

@@ -1,11 +1,13 @@
 #include <iomanip>
+#include <sstream>
 #include "Core.h"
 #include "libhelper.hpp"
 using Libhelper = Singleton<LibHelper>;
 using MsgQueueInstance = Singleton<MsgQueue>;
+using namespace Lunet;
 
 Core::Core()
-:incr_(0),running_(false),loglevel_(eLogLevel::eDebug)
+:incr_(0),running_(false),loglevel_(Logger::eLogLevel::eDebug)
 {
     init();
 }
@@ -40,6 +42,7 @@ void Core::run(Tasks&& tasks)
 
 IContext* Core::NewServer(const std::string& modulename)
 {
+    std::lock_guard<std::mutex> lg(lock_);
     incr_++;
     std::string funcname = "create";
     auto helper = Libhelper::instance();
@@ -52,6 +55,7 @@ IContext* Core::NewServer(const std::string& modulename)
 
 IContext* Core::GetServer(int id)
 {
+    std::lock_guard<std::mutex> lg(lock_);
     auto iter = servers_.find(id);
     if(iter == servers_.end())
     {
@@ -74,7 +78,12 @@ void Core::send(int source, int dest, Msg&& msg)
 
 }
 
-void Core::log(std::stringstream && stream, Core::eLogLevel level)
+void Core::SetLogLevel(Logger::eLogLevel level)
+{
+    loglevel_ = level;
+}
+
+void Core::log(std::stringstream && stream, Logger::eLogLevel level)
 {
     if (level >= loglevel_)
     {

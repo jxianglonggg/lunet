@@ -57,6 +57,7 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "map": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "set": "cpp"
     }
 }

@@ -3,6 +3,7 @@
 #include <random>
 #include <sstream>
 #include <iomanip>
+#include "core/define.h"
 #include "core/MsgQueue.h"
 #include "core/Singleton.h"
 #include "core/any.hpp"
@@ -50,7 +51,7 @@ void test_consume(int svrid)
 
 void test_message_queue()
 {
-    Core* core = new Core();
+    Lunet::Core* core = CoreIns::instance();
 
     Tasks tasks;
     tasks.emplace_back(std::bind(test_poduce, 1));
@@ -95,15 +96,11 @@ void test_any()
 void test_logger()
 {
 
-    std::shared_ptr<Core> core(CoreIns::instance());
-    IContext& logger =  *(core->GetServer(1));
-
-    //stringstream stream;
-    //stream<<logger;
-
+    std::shared_ptr<Lunet::Core> core(CoreIns::instance());
     auto produce_log = [&]
     {
-        LOGD(logger, 1, "a", 2, "d ddd", 100);
+        Lunet::Logger::SetLogLevel(Lunet::Logger::eDebug);
+        Lunet::Logger::LOGD(core->GetServer(1), 1, "a", 2, "d ddd", 100);
         //logd(__FILE__, __LINE__, logger);
     };
 

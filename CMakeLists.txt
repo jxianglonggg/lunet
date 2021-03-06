@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 2.8)
 set(CMAKE_CXX_FLAGS "${CAMKE_CXX_FLAGS} -g -std=c++11 -pthread -ldl")
 project(lunet)
 
-include_directories(lunet 3rd/lua)
+include_directories(lunet 3rd)
 AUX_SOURCE_DIRECTORY(lunet/core CORE_SRC)
 
 # 编译lunet

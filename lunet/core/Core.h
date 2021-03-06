@@ -5,8 +5,10 @@
 #include <thread>
 #include <vector>
 #include <map>
-#include <sstream>
 #include <functional>
+#include <mutex>
+#include "core/define.h"
+#include "core/noncopyable.h"
 #include "core/Context.h" 
 #include "core/MsgQueue.h"
 #include "core/Singleton.h"
@@ -14,16 +16,9 @@
 using Threads = std::vector<std::thread>;
 using Task = std::function<void(void)>;
 using Tasks = std::vector<Task>;
-class Core 
+namespace Lunet{
+class Core :noncopyable
 {
-public:
-    enum eLogLevel 
-    {
-        eDebug = 0,
-        eWarn,
-        eInfo,
-        eErro,
-    };
 public:
     Core();
     Core(const Core& c) = delete;
@@ -35,19 +30,25 @@ public:
     IContext* GetServer(int id);
     bool call(int source, int dest, Msg&& msg);
     void send(int source, int dest, Msg&& msg);
+
+public:
+    void SetLogLevel(Logger::eLogLevel level);
     
 public:
-    void log(std::stringstream && stream, Core::eLogLevel level);
+    void log(std::stringstream && stream, Logger::eLogLevel level);
     
 private:
+    std::mutex lock_;
     Threads threads_;
     int incr_;
-    eLogLevel loglevel_; 
+    Logger::eLogLevel loglevel_; 
     bool stop_;
     bool running_;
     std::map<int, IContext*> servers_;
     IContext* logger_;
-};
+}; //Core
+}; //Lunet
 
-using CoreIns = Singleton<Core>;
-#endif //__CORE
+
+using CoreIns = Singleton<Lunet::Core>;
+#endif //__CORE__

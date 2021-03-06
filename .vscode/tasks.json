@@ -13,7 +13,7 @@
             // 增量编译
             "type": "shell",
             "label": "build",
-            "command":"cd linux_build; make clean ; make; rm -rf *.log",
+            "command":"cd linux_build; make clean ; make;",
         }
     ],
     "version": "2.0.0"
