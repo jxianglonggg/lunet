@@ -94,11 +94,17 @@ void test_any()
 
 void test_logger()
 {
+
     std::shared_ptr<Core> core(CoreIns::instance());
+    IContext& logger =  *(core->GetServer(1));
+
+    //stringstream stream;
+    //stream<<logger;
 
     auto produce_log = [&]
     {
-        LOGD(1, "a", 2, "d ddd", 100);
+        LOGD(logger, 1, "a", 2, "d ddd", 100);
+        //logd(__FILE__, __LINE__, logger);
     };
 
     auto work_thread = [&]

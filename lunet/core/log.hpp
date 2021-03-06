@@ -1,6 +1,15 @@
 #ifndef __LOG__
 #define __LOG__
 #include "core/Core.h"
+#include "core/Context.h"
+
+std::ostream & operator << (std::ostream & os, IContext& context)
+{
+    char debugstr[128] = { 0 };
+    snprintf(debugstr, sizeof(debugstr), "[%s(%d)]", typeid(context).name(), context.getid()); 
+    os<<debugstr;
+    return os;
+}
 
 void log(std::stringstream& stream, Core::eLogLevel level)
 {
@@ -8,7 +17,7 @@ void log(std::stringstream& stream, Core::eLogLevel level)
 }
 
 template <typename T, typename ... Args>
-void log(std::stringstream& stream, Core::eLogLevel level, T head, Args ... args)
+void log(std::stringstream& stream, Core::eLogLevel level, T&& head, Args ... args)
 {
     stream << head;
     log(stream, level, args...);
@@ -16,7 +25,7 @@ void log(std::stringstream& stream, Core::eLogLevel level, T head, Args ... args
 
 const char* logI2S[] = {"D", "W", "I", "E"};
 template <typename ... Args>
-void log(Core::eLogLevel level, const char* file, const int line, Args ... args)
+void log(Core::eLogLevel level, const char* file, const int line, Args&& ... args)
 {
     char debugstr[128] = { 0 };
     snprintf(debugstr, sizeof(debugstr), "[%s.%d][%s]", file, line, logI2S[level]);
@@ -26,25 +35,25 @@ void log(Core::eLogLevel level, const char* file, const int line, Args ... args)
 }
 
 template <typename ... Args>
-void logd(Args ... args)
+void logd(Args&& ... args)
 {
     log(Core::eDebug, args...);
 }
 
 template <typename ... Args>
-void logw(Args ... args)
+void logw(Args&& ... args)
 {
     log(Core::eWarn, args...);
 }
 
 template <typename ... Args>
-void logi(Args ... args)
+void logi(Args&& ... args)
 {
     log(Core::eInfo, args...);
 }
 
 template <typename ... Args>
-void loge(Args ... args)
+void loge(Args&& ... args)
 {
     log(Core::eErro, args...);
 }
@@ -53,4 +62,5 @@ void loge(Args ... args)
 #define LOGW(...) logw(__FILE__, __LINE__, __VA_ARGS__)
 #define LOGI(...) logi(__FILE__, __LINE__, __VA_ARGS__)
 #define LOGE(...) logE(__FILE__, __LINE__, __VA_ARGS__)
+
 #endif //__LOG__

@@ -8,7 +8,6 @@
 #include "Any.hpp"
 
 class Msg;
-class IContext;
 class IContext :noncopyable
 {
 public:
@@ -23,10 +22,7 @@ public:
     void SetID(int id);
 private:
     int sid_;
-};
+}; 
 
-class Bootstrap :IContext
-{
-    
-};
+
 #endif //__CONTEXT__
