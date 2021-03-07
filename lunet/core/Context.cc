@@ -4,7 +4,7 @@
 IContext::IContext()
 :sid_(0), name_("")
 {
-
+    
 }
 
 IContext::~IContext()

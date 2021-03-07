@@ -20,7 +20,6 @@ Core::~Core()
 void Core::init()
 {
     logger_ = NewServer("logger");
-    logger_->init();
 }
 
 void Core::run(Tasks&& tasks)
@@ -40,20 +39,21 @@ void Core::run(Tasks&& tasks)
     }
 }
 
-IContext* Core::NewServer(const std::string& modulename)
+ContextPtr Core::NewServer(const std::string& modulename)
 {
     std::lock_guard<std::mutex> lg(lock_);
     incr_++;
     std::string funcname = "create";
     auto helper = Libhelper::instance();
-    IContext* context  = helper->ExcecuteFunc<IContext*(void)>(modulename, funcname);
+    ContextPtr context(helper->ExcecuteFunc<IContext*(void)>(modulename, funcname));
     context->SetID(incr_);
     context->init();
+    context->SetName(modulename);
     servers_.insert(std::make_pair(incr_, context));
     return context;
 }
 
-IContext* Core::GetServer(int id)
+ContextPtr Core::GetServer(int id)
 {
     std::lock_guard<std::mutex> lg(lock_);
     auto iter = servers_.find(id);
@@ -64,7 +64,7 @@ IContext* Core::GetServer(int id)
     return iter->second;
 }
 
-IContext* Core::GetServer(const std::string& name)
+ContextPtr Core::GetServer(const std::string& name)
 {
     std::lock_guard<std::mutex> lg(lock_);
     for(auto iter :servers_ )

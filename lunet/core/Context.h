@@ -26,6 +26,6 @@ private:
     int sid_;
     std::string name_;
 }; 
-
+using ContextPtr = std::shared_ptr<IContext>;
 
 #endif //__CONTEXT__

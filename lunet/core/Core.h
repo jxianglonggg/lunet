@@ -26,9 +26,9 @@ public:
 public:
     void init();
     void run(Tasks&& tasks);
-    IContext* NewServer(const std::string& modulename);
-    IContext* GetServer(int id);
-    IContext* GetServer(const std::string& name);
+    ContextPtr NewServer(const std::string& modulename);
+    ContextPtr GetServer(int id);
+    ContextPtr GetServer(const std::string& name);
     bool call(int source, int dest, Msg&& msg);
     void send(int source, int dest, Msg&& msg);
 public:
@@ -42,8 +42,8 @@ private:
     Logger::eLogLevel loglevel_; 
     bool stop_;
     bool running_;
-    std::map<int, IContext*> servers_;
-    IContext* logger_;
+    std::map<int, ContextPtr> servers_;
+    ContextPtr logger_;
 }; //Core
 }; //Lunet
 

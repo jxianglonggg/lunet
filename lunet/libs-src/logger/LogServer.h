@@ -4,9 +4,6 @@
 class LogServer :IContext
 {
 public:
-    LogServer(){}
-    ~LogServer(){}
-public:
     bool init() override;
     bool destory() override;
     bool cb(Msg&& msg) override;

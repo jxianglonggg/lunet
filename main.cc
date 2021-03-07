@@ -110,7 +110,7 @@ void test_logger()
         SubMsgQueue smq;
         if(mq->fetch(smq))
         {
-            IContext* server = core->GetServer(smq.getSid());
+            ContextPtr server = core->GetServer(smq.getSid());
             if (server == nullptr)
             {
 
