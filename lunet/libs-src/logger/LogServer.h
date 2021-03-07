@@ -1,4 +1,3 @@
-#include <string>
 #include "core/Context.h"
 #include "core/MsgQueue.h"
 

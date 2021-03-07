@@ -22,7 +22,7 @@ void test_poduce(int svrid)
     Msg::ContentTest content;
     content.a = random() % 10;
     content.b = random() % 10;
-    Msg msg(Msg::EMSGTYPE::eTest, content);
+    Msg msg(Msg::eTest, content);
     int msgid = mq->push(svrid, std::move(msg));
     std::cout<<"produce to svr="<<svrid<<";a="<<content.a<<";b="<<content.b<<";msg id="<< msgid <<std::endl;
     auto stime = chrono::seconds(random() % 5);
@@ -38,7 +38,7 @@ void test_consume(int svrid)
     {
         for(auto& msg : smq)
         {
-            if(msg.is(Msg::EMSGTYPE::eTest))
+            if(msg.is(Msg::eTest))
             {
                 Msg::ContentTest content = msg.getContent().AnyCast<Msg::ContentTest>();
                 std::cout<<"consume svrid="<<svrid<<";msg id="<<msg.getid()<<";result="<<int(content.a + content.b)<<std::endl;

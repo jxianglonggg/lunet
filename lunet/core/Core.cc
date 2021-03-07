@@ -64,6 +64,19 @@ IContext* Core::GetServer(int id)
     return iter->second;
 }
 
+IContext* Core::GetServer(const std::string& name)
+{
+    std::lock_guard<std::mutex> lg(lock_);
+    for(auto iter :servers_ )
+    {
+        if (iter.second->GetName() == name)
+        {
+            return iter.second;
+        }
+    }
+    return nullptr;
+}
+
 bool Core::call(int source, int dest, Msg&& msg)
 {
     msg.source = source;

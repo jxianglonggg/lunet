@@ -28,13 +28,11 @@ public:
     void run(Tasks&& tasks);
     IContext* NewServer(const std::string& modulename);
     IContext* GetServer(int id);
+    IContext* GetServer(const std::string& name);
     bool call(int source, int dest, Msg&& msg);
     void send(int source, int dest, Msg&& msg);
-
 public:
     void SetLogLevel(Logger::eLogLevel level);
-    
-public:
     void log(std::stringstream && stream, Logger::eLogLevel level);
     
 private:

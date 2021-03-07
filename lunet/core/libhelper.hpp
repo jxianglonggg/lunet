@@ -2,7 +2,6 @@
 #define __LIB_HELPER__
 #include <iostream>
 #include <map>
-#include <string>
 #include <functional>
 #include <mutex>
 #include <dlfcn.h>
@@ -47,9 +46,10 @@ private:
         auto iter = handlers_.find(libname);
         if (iter == handlers_.end())
         {
-            char fullname[32] = { 0 };
-            snprintf(fullname, sizeof(fullname), "libs/%s.so", libname.c_str());
-            handler = dlopen(fullname, RTLD_LAZY);
+            std::stringstream stream;
+            stream <<  "libs/" << libname << ".so";
+            std::string&& fullname = stream.str();
+            handler = dlopen(fullname.c_str(), RTLD_LAZY);
             if(nullptr == handler)
             {
                 std::cout<<dlerror()<<std::endl;

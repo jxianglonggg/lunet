@@ -20,8 +20,11 @@ public:
 public:
     int getid();
     void SetID(int id);
+    void SetName(const std::string& name);
+    const std::string& GetName(); 
 private:
     int sid_;
+    std::string name_;
 }; 
 
 

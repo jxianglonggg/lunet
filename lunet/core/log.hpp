@@ -7,17 +7,13 @@ namespace Lunet{
 namespace Logger{
 std::ostream & operator << (std::ostream & os, IContext& context)
 {
-    char debugstr[128] = { 0 };
-    snprintf(debugstr, sizeof(debugstr), "[%s(%d)]", typeid(context).name(), context.getid()); 
-    os<<debugstr;
+    os<<"["<<typeid(context).name()<<"("<<context.getid()<<")]";
     return os;
 }
 
 std::ostream & operator << (std::ostream & os, IContext* context)
 {
-    char debugstr[128] = { 0 };
-    snprintf(debugstr, sizeof(debugstr), "[%s(%d)]", typeid(*context).name(), context->getid()); 
-    os<<debugstr;
+    os<<"["<<typeid(*context).name()<<"("<<context->getid()<<")]";
     return os;
 }
 
@@ -37,10 +33,8 @@ const char* logI2S[] = {"D", "W", "I", "E"};
 template <typename ... Args>
 void log(eLogLevel level, const char* file, const int line, Args&& ... args)
 {
-    char debugstr[128] = { 0 };
-    snprintf(debugstr, sizeof(debugstr), "[%s.%d][%s]", file, line, logI2S[level]);
     std::stringstream stream;
-    stream << debugstr;
+    stream << "[" << file << "." << line << "][" << logI2S[level] << "]";
     log(stream, level, args...);  
 }
 

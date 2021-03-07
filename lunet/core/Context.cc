@@ -2,7 +2,7 @@
 #include "MsgQueue.h"
 
 IContext::IContext()
-:sid_(0)
+:sid_(0), name_("")
 {
 
 }
@@ -20,4 +20,14 @@ int IContext::getid()
 void IContext::SetID(int id)
 {
     sid_ = id;
+}
+
+void IContext::SetName(const std::string& name)
+{
+    name_ = name;
+}
+
+const std::string& IContext::GetName()
+{
+    return name_;
 }

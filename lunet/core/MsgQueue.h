@@ -4,7 +4,6 @@
 #include <deque>
 #include <thread>
 #include <mutex>
-#include <string>
 #include "any.hpp"
 #include "noncopyable.h"
 #include "Context.h"
@@ -33,6 +32,10 @@ public:
             return s_;
         }
         void setString(std::string& s)
+        {
+            s_ = s;
+        }
+        void setString(std::string&& s)
         {
             s_ = s;
         }
