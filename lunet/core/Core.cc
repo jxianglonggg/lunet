@@ -39,6 +39,44 @@ void Core::run(Tasks&& tasks)
     }
 }
 
+void Core::run(int threadcount)
+{
+    if(running_)
+        return;
+    running_ = true;
+
+    auto work_thread = [&]()
+    {
+        auto mq = MsgQueueInstance::instance();
+        SubMsgQueue smq;
+        if(mq->fetch(smq))
+        {
+            ContextPtr server = core->GetServer(smq.getSid());
+            if (server == nullptr)
+            {
+
+            }
+            else 
+            {
+                for(auto& msg : smq)
+                {
+                    server->cb(std::move(msg));
+                } 
+            }
+        }
+    }
+    
+    for (auto i = 0;i < threadcount;i++)
+    {
+        threads_.emplace_back(work_thread);
+    }
+
+    for(auto & th : threads_)
+    {
+        th.join();
+    }
+}
+
 ContextPtr Core::NewServer(const std::string& modulename)
 {
     std::lock_guard<std::mutex> lg(lock_);

@@ -26,6 +26,7 @@ public:
 public:
     void init();
     void run(Tasks&& tasks);
+    void run(int threadcount);
     ContextPtr NewServer(const std::string& modulename);
     ContextPtr GetServer(int id);
     ContextPtr GetServer(const std::string& name);
